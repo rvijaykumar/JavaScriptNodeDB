@@ -1,0 +1,12 @@
+#folders
+**/.vscode
+**/.serverless
+**/node_modules
+**/.dynamodb
+**/.history
+**/.dynamodb
+
+#files
+*-lock.json
+*.zip
+node_modules

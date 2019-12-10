@@ -1,0 +1,13 @@
+ProductTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-ProductTable
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: ${self:custom.dynamoDbTableReadThroughPut}
+        WriteCapacityUnits: ${self:custom.dynamoDbTableWriteThroughPut}

@@ -1,0 +1,51 @@
+service: refactor-this
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-1
+  environment:
+    stage: ${opt:stage, "dev"}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+  dynamoDbTableReadThroughPuts:
+    prod: 10
+    dev: 3
+    default: 1
+  dynamoDbTableWriteThroughPuts:
+    prod: 10
+    dev: 3
+    default: 1
+  dynamoDbTableReadThroughPut: ${self:custom.dynamoDbTableReadThroughPuts.${self:provider.environment.stage}, self:custom.dynamoDbTableReadThroughPuts.default}
+  dynamoDbTableWriteThroughPut: ${self:custom.dynamoDbTableWriteThroughPuts.${self:provider.environment.stage}, self:custom.dynamoDbTableWriteThroughPuts.default}  
+  env:
+    dev: dev
+    prod: prod
+
+package:
+  exclude:
+    - test/**
+    - coverage/**    
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+functions:
+  - ${file(./src/product/infrastructure/functions.yml)}
+
+resources:
+  - ${file(./src/product/infrastructure/resources.yml)}
