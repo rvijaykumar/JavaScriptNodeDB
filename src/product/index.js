@@ -1,5 +1,5 @@
-const { get } = require('./lib/Product');
+const { get, create } = require('./lib/Product');
 
 
-module.exports = { get };
+module.exports = { get, create };
 

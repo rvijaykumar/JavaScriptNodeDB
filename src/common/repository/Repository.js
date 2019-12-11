@@ -20,4 +20,8 @@ if (process.env.IS_OFFLINE) {
 
 DocumentClient = new AWS.DynamoDB.DocumentClient();
 
-module.exports = { DocumentClient};
+const getTableName = ({modelName}) => {
+    return `refactor-this-${process.env.stage}-${modelName}`;
+  };
+
+module.exports = { DocumentClient, getTableName};

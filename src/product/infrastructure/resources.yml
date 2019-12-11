@@ -1,7 +1,8 @@
-ProductTable:
+Resources:
+  ProductTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:service}-${self:provider.stage}-ProductTable
+      TableName: ${self:service}-${self:provider.stage}-Product      
       KeySchema:
         - AttributeName: Id
           KeyType: HASH

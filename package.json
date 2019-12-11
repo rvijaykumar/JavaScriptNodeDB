@@ -23,13 +23,15 @@
     "node-jre": "^0.2.3",
     "serverless": "^1.57.0",
     "serverless-offline": "^4.10.6",
-    "showdown": "^1.9.1"
+    "showdown": "^1.9.1",
+    "serverless-dynamodb-local": "^0.2.30"
   },
   "dependencies": {
     "lodash": "^4.17.15",
     "logger": "0.0.1",
-    "serverless-dynamodb-local": "^0.2.30",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "@hapi/joi": "^15.1.1",
+    "swagger-model-validator": "^3.0.11"
   },
   "optionalDependencies": {
     "coveralls": "^3.0.7",
