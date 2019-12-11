@@ -1,5 +1,5 @@
 getProductOptionById:
-  handler: src/productOption.getById
+  handler: src/productOption/lambda/ProductOption.getByIdHandler
   events:
     - http:
         method: GET
@@ -7,7 +7,7 @@ getProductOptionById:
         cors: true
 
 createProductOption:
-  handler: src/productOption.create
+  handler: src/productOption/lambda/ProductOption.createHandler
   events:
     - http:
         method: POST

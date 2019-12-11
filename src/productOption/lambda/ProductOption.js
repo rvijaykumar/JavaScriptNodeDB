@@ -28,9 +28,11 @@ const createHandler = async event => {
   logger.info(event);
 
   try {
+    const productId = _.get(getPathParameters(event), API_PATH_PARAM_ID);
     const payload = parseApiBody(event);
+    console.log(getPathParameters(event));
 
-    const response = await create({ productPayload: payload });
+    const response = await create({ productId, productOptionPayload: payload });
     logger.info(response);
     return buildSuccessCreateResponse(response);
   } catch (error) {

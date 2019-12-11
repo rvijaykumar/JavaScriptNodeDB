@@ -4,7 +4,6 @@ const {
   RefactorError,
   ValidationError
 } = require("../../common/utils/RefactorError");
-
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
 const { createProduct, getProductById } = require("../service/ProductService");
@@ -12,7 +11,6 @@ const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
 
-// Get all Products
 const getAll = async event => {
   logger.info(event);
 
@@ -23,17 +21,16 @@ const getAll = async event => {
   };
 };
 
-// Get Product by Product Id
-const getById = async ({ Id }) => {
-  try {
-    if (_.isUndefined(Id))
-      throw new RefactorError(`Product Id is Invalid: ${Id}`);
+const getById = async ({ id }) => {
+  if (_.isUndefined(id))
+    throw new RefactorError(`Product id is Invalid: ${id}`);
 
-    const productDocument = await getProductById({ Id });
+  try {
+    const productDocument = await getProductById({ id });
 
     if (_.isUndefined(productDocument)) {
       throw new RefactorError(
-        `No Product Found for the given Identifier: ${Id}`
+        `No Product Found for the given Identifier: ${id}`
       );
     }
 
@@ -44,15 +41,15 @@ const getById = async ({ Id }) => {
   }
 };
 
-// Create Product
 const create = async ({ productPayload }) => {
   try {
+    const productDocument = _constructProductDocument({ productPayload });
+
     validatePayloadAgainstSchema({
-      payload: productPayload,
+      payload: productDocument,
       schema: ProductSchema
     });
 
-    const productDocument = _constructProductDocument({ productPayload });
     await createProduct({ productDocument });
 
     return productDocument;
@@ -69,7 +66,7 @@ const create = async ({ productPayload }) => {
 };
 
 const _constructProductDocument = ({ productPayload }) => {
-  return _.assign({}, { Id: uuid() }, productPayload);
+  return _.assign({}, { id: uuid() }, productPayload);
 };
 
 module.exports = {

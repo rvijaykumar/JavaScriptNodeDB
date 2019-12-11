@@ -20,12 +20,12 @@ const createProduct = async ({ productDocument }) => {
   }
 };
 
-const getProductById = async ({ Id }) => {
+const getProductById = async ({ id }) => {
   try {
     const response = await DocumentClient.get({
       TableName: getTableName({ modelName }),
       Key: {
-        Id
+        id
       }
     }).promise();
 

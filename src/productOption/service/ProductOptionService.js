@@ -7,11 +7,11 @@ const logger = require("../../common/utils/Logger");
 
 const modelName = "ProductOption";
 
-const createProductOption = async ({ productOptionPayload }) => {
+const createProductOption = async ({ productOptionDocument }) => {
   try {
     await DocumentClient.put({
       TableName: getTableName({ modelName }),
-      Item: productOptionPayload
+      Item: productOptionDocument
     }).promise();
   } catch (error) {
     logger.error(error);
@@ -19,12 +19,12 @@ const createProductOption = async ({ productOptionPayload }) => {
   }
 };
 
-const getProductOption = async ({ Id }) => {
+const getProductOption = async ({ id }) => {
   try {
     const response = await DocumentClient.get({
       TableName: getTableName({ modelName }),
       Key: {
-        Id
+        id
       }
     }).promise();
 

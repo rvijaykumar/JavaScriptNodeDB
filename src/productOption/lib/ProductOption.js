@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const uuid = require("uuid");
-const { API_PATH_PARAM_ID_NAME } = require("../../common/utils/Constants");
+
 const logger = require("../../common/utils/Logger");
 const { ProductOptionSchema } = require("../model/ProductOptionSchema");
 const {
@@ -11,57 +11,58 @@ const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
 const {
-  getPathParameters,
-  parseApiBody,
-  buildSuccessCreateResponse,
-  buildInternalErrorFailureResponse
-} = require("../../common/utils/Utils");
+  RefactorError,
+  ValidationError
+} = require("../../common/utils/RefactorError");
 
-// Get Product Option by Product Id
-const getByProductId = async event => {
-  logger.info(event);
+const getByProductId = async ({ id }) => {
+  if (_.isUndefined(id))
+    throw new RefactorError(`Product id is Invalid: ${id}`);
+
   try {
-    const Id = _.get(getPathParameters(event), API_PATH_PARAM_ID_NAME);
+    const productOptionDocument = await getProductOption({ id });
 
-    const product = await getProductOption({ Id });
-
-    return buildSuccessCreateResponse(product);
+    if (_.isUndefined(productOptionDocument)) {
+      throw new RefactorError(
+        `No Product Option Found for the given Product Identifier: ${id}`
+      );
+    }
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse();
+    throw error;
   }
 };
 
-// Create Product Option
-const create = async event => {
-  logger.info(event);
+const create = async ({ productId, productOptionPayload }) => {
   try {
-    const productId = _.get(getPathParameters(event), API_PATH_PARAM_ID_NAME);
-    const payload = parseApiBody(event);
-    const productOptionPayload = _constructProductOption({
-      payload,
+    const productOptionDocument = _constructProductOption({
+      productOptionPayload,
       productId
     });
 
     validatePayloadAgainstSchema({
-      payload: productOptionPayload,
+      payload: productOptionDocument,
       schema: ProductOptionSchema
     });
 
-    // validate the Product Id is valid
+    // validate the Product id is valid
 
-
-    await createProductOption({ productOptionPayload });
-
-    return buildSuccessCreateResponse(productOptionPayload);
+    await createProductOption({ productOptionDocument });
+    return productOptionDocument;
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse(error.message);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors
+    throw new RefactorError();
   }
 };
 
-const _constructProductOption = ({ payload, productId }) => {
-  return _.assign({}, { Id: uuid() }, productId, payload);
+const _constructProductOption = ({ productOptionPayload, productId }) => {
+  return _.assign({}, { id: uuid() }, {productId}, productOptionPayload);
 };
 
 module.exports = {
