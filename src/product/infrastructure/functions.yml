@@ -1,5 +1,5 @@
 getProductById:
-  handler: src/product.getById
+  handler: src/product/lambda/Product.getByIdHandler
   events:
     - http:
         method: GET
@@ -7,7 +7,7 @@ getProductById:
         cors: true
 
 createProduct:
-  handler: src/product.create
+  handler: src/product/lambda/Product.createHandler
   events:
     - http:
         method: POST

@@ -1,9 +1,20 @@
 class RefactorError extends Error {
-  constructor({args}) {
-    const message = args || 'Generic Internal Error';
+  constructor( errorDescription = undefined) {
+    const message = errorDescription || "Generic Internal Error";
     super(message);
   }
 }
 
-module.exports = {RefactorError}
-;
+class SwaggerValidationError extends Error {
+  constructor( error) {
+    super(error);
+  }
+}
+
+class ValidationError extends Error {
+  constructor( error) {
+    super(error);
+  }
+}
+
+module.exports = { SwaggerValidationError, RefactorError, ValidationError };

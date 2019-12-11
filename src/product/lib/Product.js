@@ -1,18 +1,16 @@
 const _ = require("lodash");
 const uuid = require("uuid");
-const { API_PATH_PARAM_ID_NAME } = require("../../common/utils/Constants");
+const {
+  RefactorError,
+  ValidationError
+} = require("../../common/utils/RefactorError");
+
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
-const { createProduct, getProduct } = require("../service/ProductService");
+const { createProduct, getProductById } = require("../service/ProductService");
 const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
-const {
-  getPathParameters,
-  parseApiBody,
-  buildSuccessCreateResponse,
-  buildInternalErrorFailureResponse
-} = require("../../common/utils/Utils");
 
 // Get all Products
 const getAll = async event => {
@@ -26,40 +24,52 @@ const getAll = async event => {
 };
 
 // Get Product by Product Id
-const getById = async event => {
-  logger.info(event);
+const getById = async ({ Id }) => {
   try {
-    const Id = _.get(getPathParameters(event), API_PATH_PARAM_ID_NAME);
+    if (_.isUndefined(Id))
+      throw new RefactorError(`Product Id is Invalid: ${Id}`);
 
-    const product = await getProduct({ Id });
+    const productDocument = await getProductById({ Id });
 
-    return buildSuccessCreateResponse(product);
+    if (_.isUndefined(productDocument)) {
+      throw new RefactorError(
+        `No Product Found for the given Identifier: ${Id}`
+      );
+    }
+
+    return productDocument;
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse();
+    throw error;
   }
 };
 
 // Create Product
-const create = async event => {
-  logger.info(event);
-
+const create = async ({ productPayload }) => {
   try {
-    const payload = parseApiBody(event);
-    validatePayloadAgainstSchema({ payload, schema: ProductSchema });
+    validatePayloadAgainstSchema({
+      payload: productPayload,
+      schema: ProductSchema
+    });
 
-    const productPayload = _constructProduct({ payload });
-    await createProduct({ productPayload });
+    const productDocument = _constructProductDocument({ productPayload });
+    await createProduct({ productDocument });
 
-    return buildSuccessCreateResponse(productPayload);
+    return productDocument;
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse(error.message);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors
+    throw new RefactorError();
   }
 };
 
-const _constructProduct = ({ payload }) => {
-  return _.assign({}, { Id: uuid() }, payload);
+const _constructProductDocument = ({ productPayload }) => {
+  return _.assign({}, { Id: uuid() }, productPayload);
 };
 
 module.exports = {

@@ -2,24 +2,25 @@ const {
   DocumentClient,
   getTableName
 } = require("../../common/repository/Repository");
+const { RefactorError } = require('../../common/utils/RefactorError');
 
 const logger = require("../../common/utils/Logger");
 
 const modelName = "Product";
 
-const createProduct = async ({ productPayload }) => {
+const createProduct = async ({ productDocument }) => {
   try {
     await DocumentClient.put({
       TableName: getTableName({ modelName }),
-      Item: productPayload
+      Item: productDocument
     }).promise();
   } catch (error) {
     logger.error(error);
-    throw error;
+    throw new RefactorError();
   }
 };
 
-const getProduct = async ({ Id }) => {
+const getProductById = async ({ Id }) => {
   try {
     const response = await DocumentClient.get({
       TableName: getTableName({ modelName }),
@@ -28,11 +29,11 @@ const getProduct = async ({ Id }) => {
       }
     }).promise();
 
-    return response;
+    return response.Item;
   } catch (error) {
     logger.error(error);
-    throw error;
+    throw new RefactorError();
   }
 };
 
-module.exports = { createProduct, getProduct };
+module.exports = { createProduct, getProductById };

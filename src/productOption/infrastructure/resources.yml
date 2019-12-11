@@ -7,7 +7,7 @@ Resources:
         - AttributeName: Id
           KeyType: HASH
         - AttributeName: ProductId
-          KeyType: HASH  
+          KeyType: RANGE  
       AttributeDefinitions:
         - AttributeName: Id
           AttributeType: S

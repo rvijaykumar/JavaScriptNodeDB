@@ -46,6 +46,8 @@ plugins:
 
 functions:
   - ${file(./src/product/infrastructure/functions.yml)}
+  - ${file(./src/productOption/infrastructure/functions.yml)}
 
 resources: 
   - ${file(./src/product/infrastructure/resources.yml)}
+  - ${file(./src/productOption/infrastructure/resources.yml)}

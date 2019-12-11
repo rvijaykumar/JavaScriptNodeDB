@@ -2,7 +2,7 @@ const Validator = require("swagger-model-validator");
 const path = require("path");
 const fs = require("fs");
 const { safeLoad } = require("js-yaml");
-const { RefactorError } = require("./RefactorError");
+const { ValidationError, SwaggerValidationError } = require("./RefactorError");
 
 const logger = require('../utils/Logger');
 
@@ -20,8 +20,8 @@ const validatePayloadAgainstSchema = ({ payload, schema }) => {
   const { error } = response;
 
   if (error) {
-    logger.error(`Swagger Validation Error Occurred: ${error}`);
-    throw new RefactorError({ args: `Input validation failed: ${error.message}`});
+    logger.error(error);
+    throw new ValidationError(`Input validation failed: ${error.message}`);
   }
 
   return true;
@@ -37,8 +37,7 @@ const validatePayloadAgainstSwagger = ({ data, swaggerRefName }) => {
   const { valid, errors, errorCount } = response;
 
   if (!valid || errorCount > 0) {
-    // TODO proper or applicaiton error handling framework
-    throw Error(`Swagger validation failed, ${errors}`);
+    throw new SwaggerValidationError(errors);
   }
 
   return true;
