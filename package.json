@@ -31,7 +31,8 @@
     "logger": "0.0.1",
     "uuid": "^3.3.3",
     "@hapi/joi": "^15.1.1",
-    "swagger-model-validator": "^3.0.11"
+    "swagger-model-validator": "^3.0.11",
+    "moment": "^2.24.0"
   },
   "optionalDependencies": {
     "coveralls": "^3.0.7",

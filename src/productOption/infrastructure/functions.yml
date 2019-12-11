@@ -1,0 +1,15 @@
+getProductOptionById:
+  handler: src/productOption.getById
+  events:
+    - http:
+        method: GET
+        path: /api/products/{id}/options/{optionId}
+        cors: true
+
+createProductOption:
+  handler: src/productOption.create
+  events:
+    - http:
+        method: POST
+        path: /api/products/{id}/options
+        cors: true

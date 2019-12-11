@@ -1,23 +1,33 @@
-const Validator = require('swagger-model-validator');
-const path = require('path');
-const fs = require('fs');
-const { safeLoad } = require('js-yaml');
+const Validator = require("swagger-model-validator");
+const path = require("path");
+const fs = require("fs");
+const { safeLoad } = require("js-yaml");
+const { RefactorError } = require("./RefactorError");
 
-const specsFolder = path.join(__dirname, './swagger/config/');
+const logger = require('../utils/Logger');
+
+// TODO
+const specsFolder = path.join(__dirname, "../swagger/config/");
 const specsFile = safeLoad(
   fs.readFileSync(`${specsFolder}/swagger-spec.yml`),
-  'utf8'
+  "utf8"
 );
 const validator = new Validator(specsFile);
 
-const validatePayloadAgainstSchema = ({
-    payload,
-    schema
-  }) => {
-return schema.validate(payload);
+const validatePayloadAgainstSchema = ({ payload, schema }) => {
+  const response = schema.validate(payload);
+
+  const { error } = response;
+
+  if (error) {
+    logger.error(`Swagger Validation Error Occurred: ${error}`);
+    throw new RefactorError({ args: `Input validation failed: ${error.message}`});
+  }
+
+  return true;
 };
 
-const validatePayloadAgainstSwagger = ({data, swaggerRefName, }) => {
+const validatePayloadAgainstSwagger = ({ data, swaggerRefName }) => {
   const response = validator.validate(
     data,
     specsFile.definitions[`${swaggerRefName}`],
@@ -34,6 +44,7 @@ const validatePayloadAgainstSwagger = ({data, swaggerRefName, }) => {
   return true;
 };
 
-
-module.exports = {validatePayloadAgainstSchema, validatePayloadAgainstSwagger};
-
+module.exports = {
+  validatePayloadAgainstSchema,
+  validatePayloadAgainstSwagger
+};

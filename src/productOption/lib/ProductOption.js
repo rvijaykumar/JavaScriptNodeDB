@@ -3,7 +3,7 @@ const uuid = require("uuid");
 const { API_PATH_PARAM_ID_NAME } = require("../../common/utils/Constants");
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
-const { createProduct, getProduct } = require("../service/ProductService");
+const { createProduct, getProduct } = require("../service/ProductOptionService");
 const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
@@ -13,6 +13,7 @@ const {
   buildSuccessCreateResponse,
   buildInternalErrorFailureResponse
 } = require("../../common/utils/Utils");
+
 
 // Get all Products
 const getAll = async event => {
@@ -36,16 +37,16 @@ const getById = async event => {
     return buildSuccessCreateResponse(product);
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse();
+    buildInternalErrorFailureResponse();
   }
 };
 
 // Create Product
 const create = async event => {
   logger.info(event);
-
   try {
     const payload = parseApiBody(event);
+
     validatePayloadAgainstSchema({ payload, schema: ProductSchema });
 
     const productPayload = _constructProduct({ payload });
@@ -54,7 +55,7 @@ const create = async event => {
     return buildSuccessCreateResponse(productPayload);
   } catch (error) {
     logger.error(error);
-    return buildInternalErrorFailureResponse(error.message);
+    buildInternalErrorFailureResponse();
   }
 };
 

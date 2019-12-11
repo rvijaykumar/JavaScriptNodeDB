@@ -1,26 +1,10 @@
-getProducts:
-  handler: src/product.get
+getProductById:
+  handler: src/product.getById
   events:
     - http:
         method: GET
-        path: /api/products
+        path: /api/products/{id}
         cors: true
-
-# getProductsByName:
-#   handler: src/product.getByName
-#   events:
-#     - http:
-#         method: GET
-#         path: /api/products?name={name}
-#         cors: true
-
-# getProductById:
-#   handler: src/product.getById
-#   events:
-#     - http:
-#         method: GET
-#         path: /api/products/{id}
-#         cors: true
 
 createProduct:
   handler: src/product.create
@@ -29,19 +13,3 @@ createProduct:
         method: POST
         path: /api/products
         cors: true
-
-# updateProduct:
-#   handler: src/product.udpate
-#   events:
-#     - http:
-#         method: PUT
-#         path: /api/products/{id}
-#         cors: true
-
-# deleteProduct:
-#   handler: src/product.delete
-#   events:
-#     - http:
-#         method: DELETE
-#         path: /api/products/{id}
-#         cors: true

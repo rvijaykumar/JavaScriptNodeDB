@@ -1,5 +1,4 @@
-const { get, create } = require('./lib/Product');
+const { getAll, getById, create } = require('./lib/Product');
 
-
-module.exports = { get, create };
+module.exports = { getAll, getById, create };
 
