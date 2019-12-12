@@ -2,6 +2,8 @@ const _ = require("lodash");
 const uuid = require("uuid");
 
 const logger = require("../../common/utils/Logger");
+const { getById } = require("../../product");
+
 const { ProductOptionSchema } = require("../model/ProductOptionSchema");
 const {
   createProductOption,
@@ -35,6 +37,9 @@ const getByProductId = async ({ id }) => {
 
 const create = async ({ productId, productOptionPayload }) => {
   try {
+    // validate the Product id is valid
+    await getById({ id: productId });
+
     const productOptionDocument = _constructProductOption({
       productOptionPayload,
       productId
@@ -44,8 +49,6 @@ const create = async ({ productId, productOptionPayload }) => {
       payload: productOptionDocument,
       schema: ProductOptionSchema
     });
-
-    // validate the Product id is valid
 
     await createProductOption({ productOptionDocument });
     return productOptionDocument;
@@ -62,7 +65,7 @@ const create = async ({ productId, productOptionPayload }) => {
 };
 
 const _constructProductOption = ({ productOptionPayload, productId }) => {
-  return _.assign({}, { id: uuid() }, {productId}, productOptionPayload);
+  return _.assign({}, { id: uuid() }, { productId }, productOptionPayload);
 };
 
 module.exports = {

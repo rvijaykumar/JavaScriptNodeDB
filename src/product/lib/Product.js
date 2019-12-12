@@ -29,7 +29,7 @@ const getById = async ({ id }) => {
     const productDocument = await getProductById({ id });
 
     if (_.isUndefined(productDocument)) {
-      throw new RefactorError(
+      throw new ValidationError(
         `No Product Found for the given Identifier: ${id}`
       );
     }
@@ -60,7 +60,7 @@ const create = async ({ productPayload }) => {
       throw error;
     }
 
-    // Suppress all other internal errors
+    // Suppress all other internal errors and dont show to consumers
     throw new RefactorError();
   }
 };
