@@ -4,6 +4,7 @@ const {
   getPathParameters,
   parseApiBody,
   buildSuccessCreateResponse,
+  buildSuccessOkResponse,
   buildInternalErrorFailureResponse
 } = require("../../common/utils/Utils");
 const logger = require("../../common/utils/Logger");
@@ -17,7 +18,7 @@ const getByIdHandler = async event => {
 
     const response = await getById({ id });
 
-    return buildSuccessCreateResponse(response);
+    return buildSuccessOkResponse(response);
   } catch (error) {
     logger.error(error);
     return buildInternalErrorFailureResponse(error.message);

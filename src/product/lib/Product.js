@@ -6,7 +6,11 @@ const {
 } = require("../../common/utils/RefactorError");
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
-const { createProduct, getProductById } = require("../service/ProductService");
+const {
+  createProduct,
+  getProductById,
+  getProductByName
+} = require("../service/ProductService");
 const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
@@ -35,6 +39,26 @@ const getById = async ({ id }) => {
     }
 
     return productDocument;
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const getByName = async ({ productName }) => {
+  if (_.isUndefined(productName))
+    throw new RefactorError(`Product name is Invalid: ${productName}`);
+
+  try {
+    const productDocuments = await getProductByName({ productName });
+
+    if (_.isUndefined(productDocuments) || _.size(productDocuments) === 0 ) {
+      throw new ValidationError(
+        `No Product Found for the given Identifier: ${productName}`
+      );
+    }
+
+    return productDocuments;
   } catch (error) {
     logger.error(error);
     throw error;
@@ -72,5 +96,6 @@ const _constructProductDocument = ({ productPayload }) => {
 module.exports = {
   getAll,
   getById,
+  getByName,
   create
 };

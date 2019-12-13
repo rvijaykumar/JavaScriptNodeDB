@@ -9,7 +9,7 @@ const headers = {
 describe("Refacor This Acceptance Test", () => {
   describe("Product", () => {
     const productPostBody = {
-      name: "testProduct",
+      productName: "testProduct - acceptance test",
       description: "testProduct description",
       price: 1,
       deliveryPrice: 1
@@ -18,14 +18,13 @@ describe("Refacor This Acceptance Test", () => {
     let id;
 
     describe("Product - Post", () => {
-      test.only("should successfully create a Product", async () => {
+      test("should successfully create a Product", async () => {
         const axiosParams = {
           method: "post",
           url: `${API_HOST}/api/products`,
           headers,
           data: productPostBody
         };
-        console.log(axiosParams);
 
         const proudctPostResponse = await axios(axiosParams);
         const productCreated = proudctPostResponse.data;
@@ -34,7 +33,7 @@ describe("Refacor This Acceptance Test", () => {
         expect(productCreated).toMatchObject(
           expect.objectContaining({
             id: expect.anything(),
-            name: "testProduct",
+            productName: "testProduct - acceptance test",
             description: "testProduct description",
             price: 1,
             deliveryPrice: 1
@@ -46,7 +45,7 @@ describe("Refacor This Acceptance Test", () => {
       });
     });
 
-    describe("Product - Get", () => {
+    describe("Product - Get by Id", () => {
       test("should successfully return a Product", async () => {
         const productGetResponse = await axios({
           method: "get",
@@ -54,6 +53,35 @@ describe("Refacor This Acceptance Test", () => {
         });
 
         expect(productGetResponse.status).toEqual(200);
+        expect(productGetResponse.data).toMatchObject({
+          productName: "testProduct - acceptance test",
+          description: "testProduct description",
+          id,
+          deliveryPrice: 1,
+          price: 1
+        });
+      });
+    });
+
+    describe("Product - Get by name", () => {
+      test("should successfully return a Product", async () => {
+        const productGetResponse = await axios({
+          method: "get",
+          url: `${API_HOST}/api/products?productName=testProduct - acceptance test`
+        });
+
+        expect(productGetResponse.status).toEqual(200);
+        expect(productGetResponse.data).toEqual(
+          expect.arrayContaining([
+            {
+              deliveryPrice: 1,
+              description: "testProduct description",
+              id,
+              price: 1,
+              productName: "testProduct - acceptance test"
+            }
+          ])
+        );
       });
     });
   });

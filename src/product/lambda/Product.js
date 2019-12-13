@@ -1,14 +1,19 @@
 const _ = require("lodash");
-const { API_PATH_PARAM_ID } = require("../../common/utils/Constants");
+const {
+  API_PATH_PARAM_ID,
+  API_PATH_PARAM_PRODUCT_NAME
+} = require("../../common/utils/Constants");
 const {
   getPathParameters,
+  getQueryStringParameters,
   parseApiBody,
+  buildSuccessOkResponse,
   buildSuccessCreateResponse,
   buildInternalErrorFailureResponse
 } = require("../../common/utils/Utils");
 const logger = require("../../common/utils/Logger");
 
-const { getById, create } = require("..");
+const { getById, getByName, getAll, create } = require("..");
 
 const getByIdHandler = async event => {
   logger.info(event);
@@ -17,7 +22,26 @@ const getByIdHandler = async event => {
 
     const response = await getById({ id });
 
-    return buildSuccessCreateResponse(response);
+    return buildSuccessOkResponse(response);
+  } catch (error) {
+    logger.error(error);
+    return buildInternalErrorFailureResponse(error.message);
+  }
+};
+
+const getHandler = async event => {
+  logger.info(event);
+  try {
+    const productName = _.get(
+      getQueryStringParameters(event),
+      API_PATH_PARAM_PRODUCT_NAME
+    );
+
+    const response = productName
+      ? await getByName({ productName })
+      : await getAll();
+
+    return buildSuccessOkResponse(response);
   } catch (error) {
     logger.error(error);
     return buildInternalErrorFailureResponse(error.message);
@@ -39,4 +63,4 @@ const createHandler = async event => {
   }
 };
 
-module.exports = { getByIdHandler, createHandler };
+module.exports = { getByIdHandler, getHandler, createHandler };

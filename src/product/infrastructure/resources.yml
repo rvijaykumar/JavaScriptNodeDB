@@ -3,12 +3,24 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: ${self:service}-${self:provider.stage}-Product      
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: productName
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH    
       ProvisionedThroughput:
         ReadCapacityUnits: ${self:custom.dynamoDbTableReadThroughPut}
         WriteCapacityUnits: ${self:custom.dynamoDbTableWriteThroughPut}
+      GlobalSecondaryIndexes:
+        - IndexName: ProuctNameGSI
+          KeySchema:
+            - AttributeName: productName
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: ${self:custom.dynamoDbTableReadThroughPut}
+            WriteCapacityUnits: ${self:custom.dynamoDbTableWriteThroughPut}

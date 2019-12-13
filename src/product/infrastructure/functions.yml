@@ -4,7 +4,13 @@ getProductById:
     - http:
         method: GET
         path: /api/products/{id}
-        cors: true
+
+getProduct:
+  handler: src/product/lambda/Product.getHandler
+  events:
+    - http:
+        method: GET
+        path: /api/products        
 
 createProduct:
   handler: src/product/lambda/Product.createHandler
@@ -12,4 +18,4 @@ createProduct:
     - http:
         method: POST
         path: /api/products
-        cors: true
+

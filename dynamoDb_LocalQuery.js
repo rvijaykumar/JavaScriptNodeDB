@@ -2,6 +2,7 @@
  * Works only in Local DynamoDB Shell
  */
 
+// Query local dynamo db
 const dynamodb = new AWS.DynamoDB({
   region: 'us-east-1',
   endpoint: "http://localhost:8000"
@@ -32,3 +33,13 @@ const dynamodb = new AWS.DynamoDB({
   dynamodb.scan(params)
   .on('complete', doScan)
   .send();
+
+// to get list of tables
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+
+// query by condition
+aws dynamodb query \
+    --table-name refactor-this-dev-Product \
+    --key-condition-expression "proudctName = :productName" \
+    --expression-attribute-values  ''":productName = {"S": "test"}"'
+    --endpoint-url http://localhost:8000

@@ -36,4 +36,22 @@ const getProductById = async ({ id }) => {
   }
 };
 
-module.exports = { createProduct, getProductById };
+const getProductByName = async ({ productName }) => {
+  try {
+    const response = await DocumentClient.query({
+      TableName: getTableName({ modelName }),
+      IndexName: 'ProuctNameGSI',
+      KeyConditionExpression: 'productName = :productName',
+      ExpressionAttributeValues: {
+        ':productName': productName,
+      }
+    }).promise();
+
+    return response.Items;
+  } catch (error) {
+    logger.error(error);
+    throw new RefactorError();
+  }
+};
+
+module.exports = { createProduct, getProductById, getProductByName };
