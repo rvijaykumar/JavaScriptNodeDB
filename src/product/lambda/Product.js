@@ -32,6 +32,7 @@ const getByIdHandler = async event => {
 const getHandler = async event => {
   logger.info(event);
   try {
+    // TODO we should also validate the queryParm is of expected string
     const productName = _.get(
       getQueryStringParameters(event),
       API_PATH_PARAM_PRODUCT_NAME

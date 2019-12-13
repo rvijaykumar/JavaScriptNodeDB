@@ -5,10 +5,6 @@ module.exports = {
     return event.queryStringParameters || {};
   },
 
-  getHeaders(event) {
-    return event.headers;
-  },
-
   parseApiBody(event) {
     return JSON.parse(event.body);
   },

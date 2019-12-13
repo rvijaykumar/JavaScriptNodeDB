@@ -19,20 +19,48 @@ const createProductOption = async ({ productOptionDocument }) => {
   }
 };
 
-const getProductOption = async ({ id }) => {
+const getProductOptionByProductId = async ({ productId }) => {
   try {
-    const response = await DocumentClient.get({
+    const response = await DocumentClient.query({
       TableName: getTableName({ modelName }),
-      Key: {
-        id
+      KeyConditionExpression: "productId = :productId",
+      ExpressionAttributeValues: {
+        ":productId": productId
       }
     }).promise();
 
-    return response;
+    return response.Items;
   } catch (error) {
     logger.error(error);
     throw error;
   }
 };
 
-module.exports = { createProductOption, getProductOption };
+const getProductOptionByProductIdAndOptionId = async ({ productId, id }) => {
+  try {
+    const response = await DocumentClient.get({
+      // TableName: getTableName({ modelName }),
+      // KeyConditionExpression: "productId = :productId, id = :id",
+      // ExpressionAttributeValues: {
+      //   ":productId": productId,
+      //   ":id": id
+      // }
+      TableName: getTableName({ modelName }),
+      Key: {
+        productId,
+        id
+      }
+    }).promise();
+
+    return response.Item;
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+module.exports = {
+  createProductOption,
+  getProductOptionByProductId,
+  getProductOptionByProductIdAndOptionId
+};

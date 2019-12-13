@@ -7,7 +7,8 @@ const { getById } = require("../../product");
 const { ProductOptionSchema } = require("../model/ProductOptionSchema");
 const {
   createProductOption,
-  getProductOption
+  getProductOptionByProductId,
+  getProductOptionByProductIdAndOptionId
 } = require("../service/ProductOptionService");
 const {
   validatePayloadAgainstSchema
@@ -17,18 +18,49 @@ const {
   ValidationError
 } = require("../../common/utils/RefactorError");
 
-const getByProductId = async ({ id }) => {
-  if (_.isUndefined(id))
-    throw new RefactorError(`Product id is Invalid: ${id}`);
+const getByProductId = async ({ productId }) => {
+  if (_.isUndefined(productId))
+    throw new RefactorError(`Product id is Invalid: ${productId}`);
 
   try {
-    const productOptionDocument = await getProductOption({ id });
+    const productOptionDocuments = await getProductOptionByProductId({
+      productId
+    });
+
+    if (
+      _.isUndefined(productOptionDocuments) ||
+      _.size(productOptionDocuments) === 0
+    ) {
+      throw new RefactorError(
+        `No Product Option Found for the given Product Identifier: ${productId}`
+      );
+    }
+
+    return productOptionDocuments;
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const getByProductIdAndOptionId = async ({ productId, id }) => {
+  if (_.isUndefined(productId))
+    throw new RefactorError(`Product id is Invalid: ${productId}`);
+  if (_.isUndefined(id)) throw new RefactorError(`Option id is Invalid: ${id}`);
+
+  try {
+    const productOptionDocument = await getProductOptionByProductIdAndOptionId({
+      productId,
+      id
+    });
 
     if (_.isUndefined(productOptionDocument)) {
       throw new RefactorError(
-        `No Product Option Found for the given Product Identifier: ${id}`
+        `No Product Option Found for the given Product Id: ${productId} and Option Id:${id}`
       );
     }
+
+    return productOptionDocument;
   } catch (error) {
     logger.error(error);
     throw error;
@@ -69,6 +101,7 @@ const _constructProductOption = ({ productOptionPayload, productId }) => {
 };
 
 module.exports = {
+  getByProductIdAndOptionId,
   getByProductId,
   create
 };

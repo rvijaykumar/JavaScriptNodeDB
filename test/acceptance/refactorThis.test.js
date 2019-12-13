@@ -14,7 +14,7 @@ describe("Refacor This Acceptance Test", () => {
       price: 1,
       deliveryPrice: 1
     };
-    const productGet = {};
+
     let id;
 
     describe("Product - Post", () => {

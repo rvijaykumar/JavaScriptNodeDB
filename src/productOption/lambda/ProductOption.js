@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { API_PATH_PARAM_ID } = require("../../common/utils/Constants");
+const { API_PATH_PARAM_PRODUCT_ID } = require("../../common/utils/Constants");
 const {
   getPathParameters,
   parseApiBody,
@@ -9,14 +9,31 @@ const {
 } = require("../../common/utils/Utils");
 const logger = require("../../common/utils/Logger");
 
-const { getById, create } = require("..");
+const { getByProductIdAndOptionId, getByProductId, create } = require("..");
 
-const getByIdHandler = async event => {
+const getByProductIdHandler = async event => {
   logger.info(event);
   try {
-    const id = _.get(getPathParameters(event), API_PATH_PARAM_ID);
+    const productId = _.get(
+      getPathParameters(event),
+      API_PATH_PARAM_PRODUCT_ID
+    );
 
-    const response = await getById({ id });
+    const response = await getByProductId({ productId });
+
+    return buildSuccessOkResponse(response);
+  } catch (error) {
+    logger.error(error);
+    return buildInternalErrorFailureResponse(error.message);
+  }
+};
+
+const getByProductIdAndOptionIdHandler = async event => {
+  logger.info(event);
+  try {
+    const { productId, id } = getPathParameters(event);
+
+    const response = await getByProductIdAndOptionId({ productId, id });
 
     return buildSuccessOkResponse(response);
   } catch (error) {
@@ -29,7 +46,10 @@ const createHandler = async event => {
   logger.info(event);
 
   try {
-    const productId = _.get(getPathParameters(event), API_PATH_PARAM_ID);
+    const productId = _.get(
+      getPathParameters(event),
+      API_PATH_PARAM_PRODUCT_ID
+    );
     const payload = parseApiBody(event);
     console.log(getPathParameters(event));
 
@@ -42,4 +62,8 @@ const createHandler = async event => {
   }
 };
 
-module.exports = { getByIdHandler, createHandler };
+module.exports = {
+  getByProductIdAndOptionIdHandler,
+  getByProductIdHandler,
+  createHandler
+};

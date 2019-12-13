@@ -4,9 +4,9 @@ Resources:
     Properties:
       TableName: ${self:service}-${self:provider.stage}-ProductOption
       KeySchema:
-        - AttributeName: id
-          KeyType: HASH
         - AttributeName: productId
+          KeyType: HASH
+        - AttributeName: id
           KeyType: RANGE  
       AttributeDefinitions:
         - AttributeName: id
