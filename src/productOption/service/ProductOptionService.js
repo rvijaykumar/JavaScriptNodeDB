@@ -36,7 +36,7 @@ const getProductOptionByProductId = async ({ productId }) => {
   }
 };
 
-const getProductOptionByProductIdAndOptionId = async ({ productId, id }) => {
+const getProductOptionByProductIdAndOptionId = async ({ productId, optionId }) => {
   try {
     const response = await DocumentClient.get({
       // TableName: getTableName({ modelName }),
@@ -48,7 +48,7 @@ const getProductOptionByProductIdAndOptionId = async ({ productId, id }) => {
       TableName: getTableName({ modelName }),
       Key: {
         productId,
-        id
+        optionId
       }
     }).promise();
 

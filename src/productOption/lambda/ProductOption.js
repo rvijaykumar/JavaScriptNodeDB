@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { API_PATH_PARAM_PRODUCT_ID } = require("../../common/utils/Constants");
+const { API_PATH_PARAM_PRODUCT_ID, API_PATH_PARAM_OPTION_ID } = require("../../common/utils/Constants");
 const {
   getPathParameters,
   parseApiBody,
@@ -36,9 +36,10 @@ const getByProductIdHandler = async event => {
 const getByProductIdAndOptionIdHandler = async event => {
   logger.info(event);
   try {
-    const { productId, id } = getPathParameters(event);
+    // We could do it directly like this
+    const { productId, optionId } = getPathParameters(event);
 
-    const response = await getByProductIdAndOptionId({ productId, id });
+    const response = await getByProductIdAndOptionId({ productId, optionId });
 
     return buildSuccessOkResponse(response);
   } catch (error) {
@@ -50,12 +51,12 @@ const getByProductIdAndOptionIdHandler = async event => {
 const updateHandler = async event => {
   logger.info(event);
   try {
-    const { productId, id } = getPathParameters(event);
+    const { productId, optionId } = getPathParameters(event);
     const payload = parseApiBody(event);
 
     const response = await update({
       productId,
-      id,
+      optionId,
       productOptionPayload: payload
     });
 

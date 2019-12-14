@@ -20,12 +20,12 @@ const upsertProduct = async ({ productDocument }) => {
   }
 };
 
-const getProductById = async ({ id }) => {
+const getProductById = async ({ productId }) => {
   try {
     const response = await DocumentClient.get({
       TableName: getTableName({ modelName }),
       Key: {
-        id
+        productId
       }
     }).promise();
 

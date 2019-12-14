@@ -26,16 +26,16 @@ const getAll = async event => {
   };
 };
 
-const getById = async ({ id }) => {
-  if (_.isUndefined(id))
-    throw new RefactorError(`Product id is Invalid: ${id}`);
+const getById = async ({ productId }) => {
+  if (_.isUndefined(productId))
+    throw new RefactorError(`Product id is Invalid: ${productId}`);
 
   try {
-    const productDocument = await getProductById({ id });
+    const productDocument = await getProductById({ productId });
 
     if (_.isUndefined(productDocument)) {
       throw new ValidationError(
-        `No Product Found for the given Identifier: ${id}`
+        `No Product Found for the given Identifier: ${productId}`
       );
     }
 
@@ -90,11 +90,11 @@ const create = async ({ productPayload }) => {
   }
 };
 
-const update = async ({ id, productPayload }) => {
+const update = async ({ productId, productPayload }) => {
   try {
     validateProductUpdatePayload({ productPayload });
 
-    const productDocumentToUpdate = await getById({ id });
+    const productDocumentToUpdate = await getById({ productId });
 
 
     _.forIn(productPayload, (value, key) => {
@@ -117,7 +117,7 @@ const update = async ({ id, productPayload }) => {
 };
 
 const _constructProductDocument = ({ productPayload }) => {
-  return _.assign({}, { id: uuid() }, productPayload);
+  return _.assign({}, { productId: uuid() }, productPayload);
 };
 
 module.exports = {

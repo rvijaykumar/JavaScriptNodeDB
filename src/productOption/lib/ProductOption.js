@@ -43,20 +43,21 @@ const getByProductId = async ({ productId }) => {
   }
 };
 
-const getByProductIdAndOptionId = async ({ productId, id }) => {
+const getByProductIdAndOptionId = async ({ productId, optionId }) => {
   if (_.isUndefined(productId))
     throw new RefactorError(`Product id is Invalid: ${productId}`);
-  if (_.isUndefined(id)) throw new RefactorError(`Option id is Invalid: ${id}`);
+  if (_.isUndefined(optionId))
+    throw new RefactorError(`Option id is Invalid: ${optionId}`);
 
   try {
     const productOptionDocument = await getProductOptionByProductIdAndOptionId({
       productId,
-      id
+      optionId
     });
 
     if (_.isUndefined(productOptionDocument)) {
       throw new RefactorError(
-        `No Product Option Found for the given Product Id: ${productId} and Option Id:${id}`
+        `No Product Option Found for the given Product Id: ${productId} and Option Id:${optionId}`
       );
     }
 
@@ -67,12 +68,12 @@ const getByProductIdAndOptionId = async ({ productId, id }) => {
   }
 };
 
-const update = async ({ productId, id, productOptionPayload }) => {
+const update = async ({ productId, optionId, productOptionPayload }) => {
   try {
     // validateProductOptionUpdatePayload({ productOptionPayload });
     const productOptionDocumentToUpdate = await getByProductIdAndOptionId({
       productId,
-      id
+      optionId
     });
 
     _.forIn(productOptionPayload, (value, key) => {
@@ -84,7 +85,6 @@ const update = async ({ productId, id, productOptionPayload }) => {
     await upsertProductOption({
       productOptionDocument: productOptionDocumentToUpdate
     });
-
 
     return productOptionDocumentToUpdate;
   } catch (error) {
@@ -102,7 +102,7 @@ const update = async ({ productId, id, productOptionPayload }) => {
 const create = async ({ productId, productOptionPayload }) => {
   try {
     // validate the Product id is valid
-    await getById({ id: productId });
+    await getById({ productId });
 
     const productOptionDocument = _constructProductOption({
       productOptionPayload,
@@ -129,7 +129,7 @@ const create = async ({ productId, productOptionPayload }) => {
 };
 
 const _constructProductOption = ({ productOptionPayload, productId }) => {
-  return _.assign({}, { id: uuid() }, { productId }, productOptionPayload);
+  return _.assign({}, { optionId: uuid() }, { productId }, productOptionPayload);
 };
 
 module.exports = {

@@ -4,12 +4,12 @@ Resources:
     Properties:
       TableName: ${self:service}-${self:provider.stage}-Product      
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: productId
           AttributeType: S
         - AttributeName: productName
           AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: productId
           KeyType: HASH    
       ProvisionedThroughput:
         ReadCapacityUnits: ${self:custom.dynamoDbTableReadThroughPut}

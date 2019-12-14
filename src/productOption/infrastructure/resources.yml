@@ -6,10 +6,10 @@ Resources:
       KeySchema:
         - AttributeName: productId
           KeyType: HASH
-        - AttributeName: id
+        - AttributeName: optionId
           KeyType: RANGE  
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: optionId
           AttributeType: S
         - AttributeName: productId
           AttributeType: S

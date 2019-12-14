@@ -3,7 +3,7 @@ getProductOptionByProductIdAndOptionId:
   events:
     - http:
         method: GET
-        path: /api/products/{productId}/options/{id}
+        path: /api/products/{productId}/options/{optionId}
 
 getProductOptionsByProductId:
   handler: src/productOption/lambda/ProductOption.getByProductIdHandler
@@ -24,4 +24,4 @@ updateProductOption:
   events:
     - http:
         method: PUT
-        path: /api/products/{productId}/options/{id}
+        path: /api/products/{productId}/options/{optionId}

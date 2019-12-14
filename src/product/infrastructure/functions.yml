@@ -3,7 +3,7 @@ getProductById:
   events:
     - http:
         method: GET
-        path: /api/products/{id}
+        path: /api/products/{productId}
 
 getProduct:
   handler: src/product/lambda/Product.getHandler
@@ -24,4 +24,4 @@ updateProduct:
   events:
     - http:
         method: PUT
-        path: /api/products/{id}
+        path: /api/products/{productId}

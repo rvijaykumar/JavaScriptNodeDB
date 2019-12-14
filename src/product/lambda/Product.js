@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const {
-  API_PATH_PARAM_ID,
+  API_PATH_PARAM_PRODUCT_ID,
   API_PATH_PARAM_PRODUCT_NAME
 } = require("../../common/utils/Constants");
 const {
@@ -18,9 +18,12 @@ const { getById, getByName, getAll, create, update } = require("..");
 const getByIdHandler = async event => {
   logger.info(event);
   try {
-    const id = _.get(getPathParameters(event), API_PATH_PARAM_ID);
+    const productId = _.get(
+      getPathParameters(event),
+      API_PATH_PARAM_PRODUCT_ID
+    );
 
-    const response = await getById({ id });
+    const response = await getById({ productId });
 
     return buildSuccessOkResponse(response);
   } catch (error) {
@@ -52,10 +55,13 @@ const getHandler = async event => {
 const updateHandler = async event => {
   logger.info(event);
   try {
-    const id = _.get(getPathParameters(event), API_PATH_PARAM_ID);
+    const productId = _.get(
+      getPathParameters(event),
+      API_PATH_PARAM_PRODUCT_ID
+    );
     const payload = parseApiBody(event);
 
-    const response = await update({ id, productPayload: payload });
+    const response = await update({ productId, productPayload: payload });
 
     return buildSuccessOkResponse(response);
   } catch (error) {
