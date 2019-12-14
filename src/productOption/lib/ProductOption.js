@@ -6,7 +6,7 @@ const { getById } = require("../../product");
 
 const { ProductOptionSchema } = require("../model/ProductOptionSchema");
 const {
-  createProductOption,
+  upsertProductOption,
   getProductOptionByProductId,
   getProductOptionByProductIdAndOptionId
 } = require("../service/ProductOptionService");
@@ -67,6 +67,38 @@ const getByProductIdAndOptionId = async ({ productId, id }) => {
   }
 };
 
+const update = async ({ productId, id, productOptionPayload }) => {
+  try {
+    // validateProductOptionUpdatePayload({ productOptionPayload });
+    const productOptionDocumentToUpdate = await getByProductIdAndOptionId({
+      productId,
+      id
+    });
+
+    _.forIn(productOptionPayload, (value, key) => {
+      productOptionDocumentToUpdate[key] = value;
+    });
+    console.log("####################");
+    console.log(productOptionDocumentToUpdate);
+
+    await upsertProductOption({
+      productOptionDocument: productOptionDocumentToUpdate
+    });
+
+
+    return productOptionDocumentToUpdate;
+  } catch (error) {
+    logger.error(error);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors and dont show to consumers
+    throw new RefactorError();
+  }
+};
+
 const create = async ({ productId, productOptionPayload }) => {
   try {
     // validate the Product id is valid
@@ -82,7 +114,7 @@ const create = async ({ productId, productOptionPayload }) => {
       schema: ProductOptionSchema
     });
 
-    await createProductOption({ productOptionDocument });
+    await upsertProductOption({ productOptionDocument });
     return productOptionDocument;
   } catch (error) {
     logger.error(error);
@@ -103,5 +135,6 @@ const _constructProductOption = ({ productOptionPayload, productId }) => {
 module.exports = {
   getByProductIdAndOptionId,
   getByProductId,
-  create
+  create,
+  update
 };

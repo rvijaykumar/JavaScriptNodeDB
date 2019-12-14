@@ -13,7 +13,7 @@ const {
 } = require("../../common/utils/Utils");
 const logger = require("../../common/utils/Logger");
 
-const { getById, getByName, getAll, create } = require("..");
+const { getById, getByName, getAll, create, update } = require("..");
 
 const getByIdHandler = async event => {
   logger.info(event);
@@ -49,6 +49,21 @@ const getHandler = async event => {
   }
 };
 
+const updateHandler = async event => {
+  logger.info(event);
+  try {
+    const id = _.get(getPathParameters(event), API_PATH_PARAM_ID);
+    const payload = parseApiBody(event);
+
+    const response = await update({ id, productPayload: payload });
+
+    return buildSuccessOkResponse(response);
+  } catch (error) {
+    logger.error(error);
+    return buildInternalErrorFailureResponse(error.message);
+  }
+};
+
 const createHandler = async event => {
   logger.info(event);
 
@@ -64,4 +79,4 @@ const createHandler = async event => {
   }
 };
 
-module.exports = { getByIdHandler, getHandler, createHandler };
+module.exports = { getByIdHandler, getHandler, createHandler, updateHandler };

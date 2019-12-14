@@ -7,12 +7,13 @@ const {
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
 const {
-  createProduct,
+  upsertProduct,
   getProductById,
   getProductByName
 } = require("../service/ProductService");
 const {
-  validatePayloadAgainstSchema
+  validatePayloadAgainstSchema,
+  validateProductUpdatePayload
 } = require("../../common/utils/Validator");
 
 const getAll = async event => {
@@ -52,7 +53,7 @@ const getByName = async ({ productName }) => {
   try {
     const productDocuments = await getProductByName({ productName });
 
-    if (_.isUndefined(productDocuments) || _.size(productDocuments) === 0 ) {
+    if (_.isUndefined(productDocuments) || _.size(productDocuments) === 0) {
       throw new ValidationError(
         `No Product Found for the given Identifier: ${productName}`
       );
@@ -74,9 +75,35 @@ const create = async ({ productPayload }) => {
       schema: ProductSchema
     });
 
-    await createProduct({ productDocument });
+    await upsertProduct({ productDocument });
 
     return productDocument;
+  } catch (error) {
+    logger.error(error);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors and dont show to consumers
+    throw new RefactorError();
+  }
+};
+
+const update = async ({ id, productPayload }) => {
+  try {
+    validateProductUpdatePayload({ productPayload });
+
+    const productDocumentToUpdate = await getById({ id });
+
+
+    _.forIn(productPayload, (value, key) => {
+      productDocumentToUpdate[key] = value;
+    });
+
+    await upsertProduct({ productDocument: productDocumentToUpdate });
+
+    return productDocumentToUpdate;
   } catch (error) {
     logger.error(error);
 
@@ -97,5 +124,6 @@ module.exports = {
   getAll,
   getById,
   getByName,
-  create
+  create,
+  update
 };

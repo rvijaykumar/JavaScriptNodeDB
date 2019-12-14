@@ -9,7 +9,12 @@ const {
 } = require("../../common/utils/Utils");
 const logger = require("../../common/utils/Logger");
 
-const { getByProductIdAndOptionId, getByProductId, create } = require("..");
+const {
+  getByProductIdAndOptionId,
+  getByProductId,
+  create,
+  update
+} = require("..");
 
 const getByProductIdHandler = async event => {
   logger.info(event);
@@ -42,6 +47,25 @@ const getByProductIdAndOptionIdHandler = async event => {
   }
 };
 
+const updateHandler = async event => {
+  logger.info(event);
+  try {
+    const { productId, id } = getPathParameters(event);
+    const payload = parseApiBody(event);
+
+    const response = await update({
+      productId,
+      id,
+      productOptionPayload: payload
+    });
+
+    return buildSuccessOkResponse(response);
+  } catch (error) {
+    logger.error(error);
+    return buildInternalErrorFailureResponse(error.message);
+  }
+};
+
 const createHandler = async event => {
   logger.info(event);
 
@@ -51,7 +75,6 @@ const createHandler = async event => {
       API_PATH_PARAM_PRODUCT_ID
     );
     const payload = parseApiBody(event);
-    console.log(getPathParameters(event));
 
     const response = await create({ productId, productOptionPayload: payload });
     logger.info(response);
@@ -65,5 +88,6 @@ const createHandler = async event => {
 module.exports = {
   getByProductIdAndOptionIdHandler,
   getByProductIdHandler,
-  createHandler
+  createHandler,
+  updateHandler
 };

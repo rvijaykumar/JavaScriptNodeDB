@@ -31,3 +31,9 @@ API_HOST="http://localhost:3000" ./node_modules/.bin/jest
 
 ## Debug in local env
 Use the VS Code Debug option and set your launch.json. (sample provided in this project.)
+
+## TODO
+1. Proper HTTP status code (ref: https://developer.yahoo.com/social/rest_api_guide/http-response-codes.html)
+2. DELETE API
+3. GET ALL by implementing pagination and limits
+4. More unit/ acceptance tests

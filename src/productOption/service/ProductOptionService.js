@@ -7,7 +7,7 @@ const logger = require("../../common/utils/Logger");
 
 const modelName = "ProductOption";
 
-const createProductOption = async ({ productOptionDocument }) => {
+const upsertProductOption = async ({ productOptionDocument }) => {
   try {
     await DocumentClient.put({
       TableName: getTableName({ modelName }),
@@ -60,7 +60,7 @@ const getProductOptionByProductIdAndOptionId = async ({ productId, id }) => {
 };
 
 module.exports = {
-  createProductOption,
+  upsertProductOption,
   getProductOptionByProductId,
   getProductOptionByProductIdAndOptionId
 };

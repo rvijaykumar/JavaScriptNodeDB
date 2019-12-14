@@ -1,6 +1,6 @@
+const _ = require("lodash");
 const { ValidationError } = require("./RefactorError");
-
-const logger = require('../utils/Logger');
+const logger = require("../utils/Logger");
 
 // TODO
 // SWAGGER validation
@@ -18,7 +18,21 @@ const validatePayloadAgainstSchema = ({ payload, schema }) => {
   return true;
 };
 
+const validateProductUpdatePayload = ({ productPayload }) => {
+  // TODO in a better way
+  if (
+    _.isUndefined(productPayload.productName) &&
+    _.isUndefined(productPayload.description) &&
+    _.isUndefined(productPayload.price) &&
+    _.isUndefined(productPayload.deliveryPrice)
+  ) {
+    throw new ValidationError(
+      "At least one Product property required in PUT operation"
+    );
+  }
+};
 
 module.exports = {
-  validatePayloadAgainstSchema
+  validatePayloadAgainstSchema,
+  validateProductUpdatePayload
 };

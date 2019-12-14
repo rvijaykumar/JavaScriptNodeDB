@@ -2,13 +2,13 @@ const {
   DocumentClient,
   getTableName
 } = require("../../common/repository/Repository");
-const { RefactorError } = require('../../common/utils/RefactorError');
+const { RefactorError } = require("../../common/utils/RefactorError");
 
 const logger = require("../../common/utils/Logger");
 
 const modelName = "Product";
 
-const createProduct = async ({ productDocument }) => {
+const upsertProduct = async ({ productDocument }) => {
   try {
     await DocumentClient.put({
       TableName: getTableName({ modelName }),
@@ -40,10 +40,10 @@ const getProductByName = async ({ productName }) => {
   try {
     const response = await DocumentClient.query({
       TableName: getTableName({ modelName }),
-      IndexName: 'ProuctNameGSI',
-      KeyConditionExpression: 'productName = :productName',
+      IndexName: "ProuctNameGSI",
+      KeyConditionExpression: "productName = :productName",
       ExpressionAttributeValues: {
-        ':productName': productName,
+        ":productName": productName
       }
     }).promise();
 
@@ -54,4 +54,4 @@ const getProductByName = async ({ productName }) => {
   }
 };
 
-module.exports = { createProduct, getProductById, getProductByName };
+module.exports = { upsertProduct, getProductById, getProductByName };

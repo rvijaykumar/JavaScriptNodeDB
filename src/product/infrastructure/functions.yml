@@ -19,3 +19,9 @@ createProduct:
         method: POST
         path: /api/products
 
+updateProduct:
+  handler: src/product/lambda/Product.updateHandler
+  events:
+    - http:
+        method: PUT
+        path: /api/products/{id}
