@@ -1,5 +1,7 @@
 /**
  * Works only in Local DynamoDB Shell
+ * 
+ * Reference file to store useful queries
  */
 
 // Query local dynamo db
