@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { ValidationError } = require("./RefactorError");
+const { ValidationError } = require("./Errors");
 const logger = require("../utils/Logger");
 
 // TODO

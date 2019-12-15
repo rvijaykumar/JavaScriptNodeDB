@@ -25,3 +25,10 @@ updateProductOption:
     - http:
         method: PUT
         path: /api/products/{productId}/options/{optionId}
+
+deleteProductOption:
+  handler: src/productOption/lambda/ProductOption.deleteHandler
+  events:
+    - http:
+        method: DELETE
+        path: /api/products/{productId}/options/{optionId}

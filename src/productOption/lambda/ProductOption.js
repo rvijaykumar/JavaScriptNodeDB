@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { API_PATH_PARAM_PRODUCT_ID, API_PATH_PARAM_OPTION_ID } = require("../../common/utils/Constants");
+const { API_PATH_PARAM_PRODUCT_ID } = require("../../common/utils/Constants");
 const {
   getPathParameters,
   parseApiBody,
@@ -13,7 +13,8 @@ const {
   getByProductIdAndOptionId,
   getByProductId,
   create,
-  update
+  update,
+  deleteByProductIdAndOptionId
 } = require("..");
 
 const getByProductIdHandler = async event => {
@@ -86,9 +87,24 @@ const createHandler = async event => {
   }
 };
 
+const deleteHandler = async event => {
+  logger.info(event);
+  try {
+    const { productId, optionId } = getPathParameters(event);
+
+    await deleteByProductIdAndOptionId({ productId, optionId });
+
+    return buildSuccessOkResponse();
+  } catch (error) {
+    logger.error(error);
+    return buildInternalErrorFailureResponse(error.message);
+  }
+};
+
 module.exports = {
   getByProductIdAndOptionIdHandler,
   getByProductIdHandler,
   createHandler,
-  updateHandler
+  updateHandler,
+  deleteHandler
 };

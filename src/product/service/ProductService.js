@@ -2,7 +2,7 @@ const {
   DocumentClient,
   getTableName
 } = require("../../common/repository/Repository");
-const { RefactorError } = require("../../common/utils/RefactorError");
+const { GenericInternalError } = require("../../common/utils/Errors");
 
 const logger = require("../../common/utils/Logger");
 
@@ -16,7 +16,7 @@ const upsertProduct = async ({ productDocument }) => {
     }).promise();
   } catch (error) {
     logger.error(error);
-    throw new RefactorError();
+    throw new GenericInternalError();
   }
 };
 
@@ -32,7 +32,7 @@ const getProductById = async ({ productId }) => {
     return response.Item;
   } catch (error) {
     logger.error(error);
-    throw new RefactorError();
+    throw new GenericInternalError();
   }
 };
 
@@ -50,8 +50,27 @@ const getProductByName = async ({ productName }) => {
     return response.Items;
   } catch (error) {
     logger.error(error);
-    throw new RefactorError();
+    throw new GenericInternalError();
   }
 };
 
-module.exports = { upsertProduct, getProductById, getProductByName };
+const deleteProduct = async ({ productId }) => {
+  try {
+    await DocumentClient.delete({
+      TableName: getTableName({ modelName }),
+      Key: {
+        productId
+      }
+    }).promise();
+  } catch (error) {
+    logger.error(error);
+    throw new GenericInternalError();
+  }
+};
+
+module.exports = {
+  upsertProduct,
+  getProductById,
+  getProductByName,
+  deleteProduct
+};

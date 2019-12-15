@@ -10,7 +10,7 @@
   "license": "VR",
   "scripts": {
     "lint": "eslint src/ test/",
-    "test": "npm run lint && ./test-api-local.sh",
+    "test": "npm run lint && API_HOST=http://localhost:3000 ./node_modules/.bin/jest",
     "start": "./start-server.sh",
     "stop": "./stop-server.sh",
     "deploy": "serverless deploy"
@@ -28,7 +28,8 @@
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "jest-tobetype": "^1.2.3",
-    "eslint-plugin-jest": "^21.27.2"
+    "eslint-plugin-jest": "^21.27.2",
+    "husky": "^1.3.1"
   },
   "dependencies": {
     "lodash": "^4.17.15",
@@ -57,5 +58,10 @@
     "ignore": [
       "aws-sdk"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test"
+    }
   }
 }

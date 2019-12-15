@@ -8,19 +8,20 @@ const { ProductOptionSchema } = require("../model/ProductOptionSchema");
 const {
   upsertProductOption,
   getProductOptionByProductId,
-  getProductOptionByProductIdAndOptionId
+  getProductOptionByProductIdAndOptionId,
+  deleteProductOption
 } = require("../service/ProductOptionService");
 const {
   validatePayloadAgainstSchema
 } = require("../../common/utils/Validator");
 const {
-  RefactorError,
+  GenericInternalError,
   ValidationError
-} = require("../../common/utils/RefactorError");
+} = require("../../common/utils/Errors");
 
 const getByProductId = async ({ productId }) => {
   if (_.isUndefined(productId))
-    throw new RefactorError(`Product id is Invalid: ${productId}`);
+    throw new ValidationError(`Product id is Invalid: ${productId}`);
 
   try {
     const productOptionDocuments = await getProductOptionByProductId({
@@ -31,7 +32,7 @@ const getByProductId = async ({ productId }) => {
       _.isUndefined(productOptionDocuments) ||
       _.size(productOptionDocuments) === 0
     ) {
-      throw new RefactorError(
+      throw new ValidationError(
         `No Product Option Found for the given Product Identifier: ${productId}`
       );
     }
@@ -45,9 +46,9 @@ const getByProductId = async ({ productId }) => {
 
 const getByProductIdAndOptionId = async ({ productId, optionId }) => {
   if (_.isUndefined(productId))
-    throw new RefactorError(`Product id is Invalid: ${productId}`);
+    throw new ValidationError(`Product id is Invalid: ${productId}`);
   if (_.isUndefined(optionId))
-    throw new RefactorError(`Option id is Invalid: ${optionId}`);
+    throw new ValidationError(`Option id is Invalid: ${optionId}`);
 
   try {
     const productOptionDocument = await getProductOptionByProductIdAndOptionId({
@@ -56,7 +57,7 @@ const getByProductIdAndOptionId = async ({ productId, optionId }) => {
     });
 
     if (_.isUndefined(productOptionDocument)) {
-      throw new RefactorError(
+      throw new ValidationError(
         `No Product Option Found for the given Product Id: ${productId} and Option Id:${optionId}`
       );
     }
@@ -79,8 +80,6 @@ const update = async ({ productId, optionId, productOptionPayload }) => {
     _.forIn(productOptionPayload, (value, key) => {
       productOptionDocumentToUpdate[key] = value;
     });
-    console.log("####################");
-    console.log(productOptionDocumentToUpdate);
 
     await upsertProductOption({
       productOptionDocument: productOptionDocumentToUpdate
@@ -95,7 +94,7 @@ const update = async ({ productId, optionId, productOptionPayload }) => {
     }
 
     // Suppress all other internal errors and dont show to consumers
-    throw new RefactorError();
+    throw new GenericInternalError();
   }
 };
 
@@ -124,17 +123,40 @@ const create = async ({ productId, productOptionPayload }) => {
     }
 
     // Suppress all other internal errors
-    throw new RefactorError();
+    throw new GenericInternalError();
+  }
+};
+
+const deleteByProductIdAndOptionId = async ({ productId, optionId }) => {
+  try {
+    await deleteProductOption({ productId, optionId });
+
+    return;
+  } catch (error) {
+    logger.error(error);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors and dont show to consumers
+    throw new GenericInternalError();
   }
 };
 
 const _constructProductOption = ({ productOptionPayload, productId }) => {
-  return _.assign({}, { optionId: uuid() }, { productId }, productOptionPayload);
+  return _.assign(
+    {},
+    { optionId: uuid() },
+    { productId },
+    productOptionPayload
+  );
 };
 
 module.exports = {
   getByProductIdAndOptionId,
   getByProductId,
   create,
-  update
+  update,
+  deleteByProductIdAndOptionId
 };

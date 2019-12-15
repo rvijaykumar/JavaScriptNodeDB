@@ -36,15 +36,12 @@ const getProductOptionByProductId = async ({ productId }) => {
   }
 };
 
-const getProductOptionByProductIdAndOptionId = async ({ productId, optionId }) => {
+const getProductOptionByProductIdAndOptionId = async ({
+  productId,
+  optionId
+}) => {
   try {
     const response = await DocumentClient.get({
-      // TableName: getTableName({ modelName }),
-      // KeyConditionExpression: "productId = :productId, id = :id",
-      // ExpressionAttributeValues: {
-      //   ":productId": productId,
-      //   ":id": id
-      // }
       TableName: getTableName({ modelName }),
       Key: {
         productId,
@@ -59,8 +56,28 @@ const getProductOptionByProductIdAndOptionId = async ({ productId, optionId }) =
   }
 };
 
+const deleteProductOption = async ({ productId, optionId }) => {
+  console.log('################################');
+  console.log(productId);
+  console.log(optionId);
+  try {
+    await DocumentClient.delete({
+      TableName: getTableName({ modelName }),
+      Key: {
+        productId,
+        optionId
+      }
+    }).promise();
+  } catch (error) {
+    logger.error(error);
+    throw error();
+  }
+};
+
+
 module.exports = {
   upsertProductOption,
   getProductOptionByProductId,
-  getProductOptionByProductIdAndOptionId
+  getProductOptionByProductIdAndOptionId,
+  deleteProductOption
 };

@@ -1,20 +1,25 @@
 const _ = require("lodash");
 const uuid = require("uuid");
 const {
-  RefactorError,
+  GenericInternalError,
   ValidationError
-} = require("../../common/utils/RefactorError");
+} = require("../../common/utils/Errors");
 const logger = require("../../common/utils/Logger");
 const { ProductSchema } = require("../model/ProductSchema");
 const {
   upsertProduct,
   getProductById,
-  getProductByName
+  getProductByName,
+  deleteProduct
 } = require("../service/ProductService");
 const {
   validatePayloadAgainstSchema,
   validateProductUpdatePayload
 } = require("../../common/utils/Validator");
+const {
+  getByProductId,
+  deleteByProductIdAndOptionId
+} = require("../../productOption/lib/ProductOption");
 
 const getAll = async event => {
   logger.info(event);
@@ -28,7 +33,7 @@ const getAll = async event => {
 
 const getById = async ({ productId }) => {
   if (_.isUndefined(productId))
-    throw new RefactorError(`Product id is Invalid: ${productId}`);
+    throw new ValidationError(`Product id is Invalid: ${productId}`);
 
   try {
     const productDocument = await getProductById({ productId });
@@ -48,7 +53,7 @@ const getById = async ({ productId }) => {
 
 const getByName = async ({ productName }) => {
   if (_.isUndefined(productName))
-    throw new RefactorError(`Product name is Invalid: ${productName}`);
+    throw new ValidationError(`Product name is Invalid: ${productName}`);
 
   try {
     const productDocuments = await getProductByName({ productName });
@@ -86,7 +91,7 @@ const create = async ({ productPayload }) => {
     }
 
     // Suppress all other internal errors and dont show to consumers
-    throw new RefactorError();
+    throw new GenericInternalError();
   }
 };
 
@@ -95,7 +100,6 @@ const update = async ({ productId, productPayload }) => {
     validateProductUpdatePayload({ productPayload });
 
     const productDocumentToUpdate = await getById({ productId });
-
 
     _.forIn(productPayload, (value, key) => {
       productDocumentToUpdate[key] = value;
@@ -112,7 +116,39 @@ const update = async ({ productId, productPayload }) => {
     }
 
     // Suppress all other internal errors and dont show to consumers
-    throw new RefactorError();
+    throw new GenericInternalError();
+  }
+};
+
+const deleteById = async ({ productId }) => {
+  try {
+    // Delete Product Options First // TODO improve using BATCH API of Dynamo
+    const productOptionDocuments = await getByProductId({ productId });
+    await Promise.all(
+      _.map(productOptionDocuments, productOptionDocument => {
+        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+        console.log(productOptionDocument);
+        return deleteByProductIdAndOptionId({
+          productId,
+          optionId: productOptionDocument.optionId
+        });
+      })
+    );
+
+    // Delete the Product
+    await deleteProduct({ productId });
+
+    logger.info(`Deleted all Product Options for the Product Id: ${productId} and the Product`);
+    return;
+  } catch (error) {
+    logger.error(error);
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    // Suppress all other internal errors and dont show to consumers
+    throw new GenericInternalError();
   }
 };
 
@@ -125,5 +161,6 @@ module.exports = {
   getById,
   getByName,
   create,
-  update
+  update,
+  deleteById
 };

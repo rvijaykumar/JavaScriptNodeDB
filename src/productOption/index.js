@@ -2,7 +2,8 @@ const {
   getByProductIdAndOptionId,
   getByProductId,
   create,
-  update
+  update,
+  deleteByProductIdAndOptionId
 } = require("./lib/ProductOption");
 
-module.exports = { getByProductIdAndOptionId, getByProductId, create, update };
+module.exports = { getByProductIdAndOptionId, getByProductId, create, update, deleteByProductIdAndOptionId };
