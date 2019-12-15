@@ -6,4 +6,10 @@ const {
   deleteByProductIdAndOptionId
 } = require("./lib/ProductOption");
 
-module.exports = { getByProductIdAndOptionId, getByProductId, create, update, deleteByProductIdAndOptionId };
+module.exports = {
+  getByProductIdAndOptionId,
+  getByProductId,
+  create,
+  update,
+  deleteByProductIdAndOptionId
+};

@@ -37,8 +37,7 @@ custom:
 
 package:
   exclude:
-    - test/**
-    - coverage/**    
+    - test/**  
 
 plugins:
   - serverless-dynamodb-local

@@ -71,7 +71,6 @@ const getByProductIdAndOptionId = async ({ productId, optionId }) => {
 
 const update = async ({ productId, optionId, productOptionPayload }) => {
   try {
-    // validateProductOptionUpdatePayload({ productOptionPayload });
     const productOptionDocumentToUpdate = await getByProductIdAndOptionId({
       productId,
       optionId
