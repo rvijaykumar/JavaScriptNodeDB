@@ -30,7 +30,7 @@ const getByProductId = async ({ productId }) => {
 
     if (
       _.isUndefined(productOptionDocuments) ||
-      _.size(productOptionDocuments) === 0
+      _.isEmpty(productOptionDocuments)
     ) {
       throw new ValidationError(
         `No Product Option Found for the given Product Identifier: ${productId}`

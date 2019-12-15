@@ -16,10 +16,10 @@ const logger = require("../../common/utils/Logger");
 const {
   getById,
   getByName,
-  getAll,
   create,
   update,
-  deleteById
+  deleteById,
+  getAll
 } = require("..");
 
 const getByIdHandler = async event => {

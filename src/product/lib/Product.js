@@ -10,7 +10,8 @@ const {
   upsertProduct,
   getProductById,
   getProductByName,
-  deleteProduct
+  deleteProduct,
+  getAllProducts
 } = require("../service/ProductService");
 const {
   validatePayloadAgainstSchema,
@@ -21,14 +22,21 @@ const {
   deleteByProductIdAndOptionId
 } = require("../../productOption/lib/ProductOption");
 
-const getAll = async event => {
-  logger.info(event);
+const getAll = async () => {
+  try {
+    const productDocuments = await getAllProducts();
 
-  // TODO
-  return {
-    statusCode: 200,
-    body: "Work in progress"
-  };
+    if (_.isUndefined(productDocuments) || _.isEmpty(productDocuments)) {
+      throw new ValidationError(
+        `No Product Found`
+      );
+    }
+
+    return productDocuments;
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 };
 
 const getById = async ({ productId }) => {
@@ -58,7 +66,7 @@ const getByName = async ({ productName }) => {
   try {
     const productDocuments = await getProductByName({ productName });
 
-    if (_.isUndefined(productDocuments) || _.size(productDocuments) === 0) {
+    if (_.isUndefined(productDocuments) || _.isEmpty(productDocuments)) {
       throw new ValidationError(
         `No Product Found for the given Identifier: ${productName}`
       );
@@ -126,8 +134,6 @@ const deleteById = async ({ productId }) => {
     const productOptionDocuments = await getByProductId({ productId });
     await Promise.all(
       _.map(productOptionDocuments, productOptionDocument => {
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-        console.log(productOptionDocument);
         return deleteByProductIdAndOptionId({
           productId,
           optionId: productOptionDocument.optionId

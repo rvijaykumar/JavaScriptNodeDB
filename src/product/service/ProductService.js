@@ -20,6 +20,21 @@ const upsertProduct = async ({ productDocument }) => {
   }
 };
 
+// TODO either query with limit for pagination
+// or scan with last key for next sets with limit
+const getAllProducts = async () => {
+  try {
+    const response = await DocumentClient.scan({
+      TableName: getTableName({ modelName })
+    }).promise();
+
+    return response.Items;
+  } catch (error) {
+    logger.error(error);
+    throw new GenericInternalError();
+  }
+};
+
 const getProductById = async ({ productId }) => {
   try {
     const response = await DocumentClient.get({
@@ -72,5 +87,6 @@ module.exports = {
   upsertProduct,
   getProductById,
   getProductByName,
-  deleteProduct
+  deleteProduct,
+  getAllProducts
 };

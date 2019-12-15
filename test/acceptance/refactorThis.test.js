@@ -1,3 +1,8 @@
+/**
+ * Acceptance Tests
+ *
+ * TODO: should use mocha or cocumber and create reusable components
+ */
 const axios = require("axios");
 
 const { API_HOST } = process.env;
@@ -72,6 +77,28 @@ describe("Refacor This Acceptance Test", () => {
         const productGetResponse = await axios({
           method: "get",
           url: `${API_HOST}/api/products?productName=testProduct - acceptance test`
+        });
+
+        expect(productGetResponse.status).toEqual(200);
+        expect(productGetResponse.data).toEqual(
+          expect.arrayContaining([
+            {
+              deliveryPrice: 1,
+              description: "testProduct description",
+              productId,
+              price: 1,
+              productName: "testProduct - acceptance test"
+            }
+          ])
+        );
+      });
+    });
+
+    describe("Product - Get All", () => {
+      test("should successfully return a Product", async () => {
+        const productGetResponse = await axios({
+          method: "get",
+          url: `${API_HOST}/api/products`
         });
 
         expect(productGetResponse.status).toEqual(200);
