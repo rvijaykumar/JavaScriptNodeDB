@@ -9,22 +9,18 @@
   "author": "VR",
   "license": "VR",
   "scripts": {
-    "lint": "eslint src/ test/",
-    "test": "npm run lint && API_HOST=http://localhost:3000 ./node_modules/.bin/jest",
+    "test": "API_HOST=http://localhost:3000 ./node_modules/.bin/jest",
     "start": "./start-server.sh",
-    "stop": "./stop-server.sh",
-    "deploy": "serverless deploy"
+    "stop": "./stop-server.sh"
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "aws-sdk": "2.573.0",
     "eslint": "^6.6.0",
-    "mocha": "^6.2.2",
     "node-jre": "^0.2.3",
     "serverless": "^1.57.0",
     "serverless-dynamodb-local": "^0.2.30",
     "serverless-offline": "^4.10.6",
-    "showdown": "^1.9.1",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "jest-tobetype": "^1.2.3",
