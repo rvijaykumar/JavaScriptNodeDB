@@ -3,6 +3,8 @@
 Pre-requisites software:
 Node.js, Serverless, Mac env.
 
+Make sure your local server is up and running to perform any GIT COMMIT.
+
 ## Offline mode/ Local
 
 To run the application in local,
