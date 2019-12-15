@@ -57,9 +57,6 @@ const getProductOptionByProductIdAndOptionId = async ({
 };
 
 const deleteProductOption = async ({ productId, optionId }) => {
-  console.log('################################');
-  console.log(productId);
-  console.log(optionId);
   try {
     await DocumentClient.delete({
       TableName: getTableName({ modelName }),
