@@ -32,8 +32,9 @@ API_HOST="http://localhost:3000" ./node_modules/.bin/jest
 11. `DELETE /products/{productId}/options/{id}` - deletes the specified product option.
 
 ## Debug in local env
-Use the VS Code Debug option and set your launch.json. (sample provided in this project.)
+Use the VS Code Debug option and set your launch.json
 
 ## TODO
 1. Proper HTTP status code (ref: https://developer.yahoo.com/social/rest_api_guide/http-response-codes.html)
-2. More unit/ acceptance tests
+2. More unit/ acceptance tests using mocha/ cocumber framework
+3. Include pagination for the API and Query Dynamo DB instead of scan operation
